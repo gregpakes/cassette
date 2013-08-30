@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cassette.Scripts;
 
 namespace Cassette.RequireJS
@@ -8,12 +9,21 @@ namespace Cassette.RequireJS
     /// </summary>
     public interface IModuleInitializer : IEnumerable<IAmdModule>
     {
+        
         /// <summary>
         /// Create AMD modules based on the assets in the provided bundles.
         /// </summary>
         /// <param name="bundles">The bundles to create AMD modules from.</param>
         /// <param name="requireJsScriptPath">Application relative path to the require.js script.</param>
         void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath);
+
+        /// <summary>
+        /// Create AMD modules based on the assets in the provided bundles.
+        /// </summary>
+        /// <param name="bundles">The bundles to create AMD modules from.</param>
+        /// <param name="requireJsScriptPath">Application relative path to the require.js script.</param>
+        /// <param name="filter">Filter function for bundles to be excluded from AMD modules</param>
+        void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath, Func<ScriptBundle, bool> filter);
 
         /// <summary>
         /// Gets the path of the bundle that contains require.js.

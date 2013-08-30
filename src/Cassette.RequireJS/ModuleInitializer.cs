@@ -23,10 +23,15 @@ namespace Cassette.RequireJS
 
         public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath)
         {
+            InitializeModules(bundles, requireJsScriptPath, bundle => false);
+        }
+
+        public void InitializeModules(IEnumerable<Bundle> bundles, string requireJsScriptPath, Func<ScriptBundle, bool> filter)
+        {
             RequireJsScriptPath = PathUtilities.AppRelative(requireJsScriptPath);
             modules.Clear();
 
-            var scriptBundles = GetScriptBundles(bundles);
+            var scriptBundles = GetScriptBundles(bundles, filter);
             foreach (var bundle in scriptBundles)
             {
                 foreach (var asset in bundle.Assets)
@@ -49,12 +54,12 @@ namespace Cassette.RequireJS
             }
         }
 
-        IEnumerable<ScriptBundle> GetScriptBundles(IEnumerable<Bundle> bundles)
+        IEnumerable<ScriptBundle> GetScriptBundles(IEnumerable<Bundle> bundles, Func<ScriptBundle, bool> filter)
         {
             return bundles
                 .OfType<ScriptBundle>()
                 // TODO: Find a cleaner way to exclude Cassette's own bundles
-                .Where(b => !b.Path.StartsWith("~/Cassette."));
+                .Where(b => !b.Path.StartsWith("~/Cassette.") && !filter(b));
         }
 
         Module GetModule(IAsset asset, Bundle bundle)
